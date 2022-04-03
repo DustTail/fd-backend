@@ -1,0 +1,71 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "tsconfig.json",
+        "sourceType": "module"
+    },
+    "plugins": ["@typescript-eslint/eslint-plugin"],
+    "extends": ["plugin:@typescript-eslint/recommended"],
+    "root": true,
+    "env": {
+        "node": true,
+        "jest": true
+    },
+    "ignorePatterns": [".eslintrc.js"],
+    "rules": {
+        "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "indent": [
+            "warn",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "linebreak-style": ["error", "unix"],
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
+        "object-curly-spacing": ["warn", "always"],
+        "no-var": "error",
+        "no-empty": "error",
+        "no-useless-constructor": "off",
+        "no-empty-function": "off",
+        "eol-last": "warn",
+        "object-shorthand": ["warn", "always"],
+        "prefer-const": "warn",
+        "prefer-arrow-callback": "warn",
+        "space-before-blocks": "warn",
+        "no-trailing-spaces": ["error"],
+        "no-multiple-empty-lines": [
+            "warn",
+            {
+                "max": 1
+            }
+        ],
+        "space-before-function-paren": [
+            "warn",
+            {
+                "anonymous": "always",
+                "named": "never",
+                "asyncArrow": "always"
+            }
+        ],
+        "comma-dangle": [
+            "error",
+            {
+                "arrays": "only-multiline",
+                "objects": "only-multiline",
+                "imports": "ignore",
+                "exports": "ignore",
+                "functions": "ignore"
+            }
+        ],
+        "no-console": "error",
+        "no-shadow": "warn",
+        "@typescript-eslint/no-shadow": ["error"],
+        "newline-per-chained-call": "error",
+        "@typescript-eslint/ban-ts-comment": "warn"
+    }
+}
