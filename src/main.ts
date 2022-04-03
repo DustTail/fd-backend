@@ -2,21 +2,18 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as bodyParser from 'body-parser';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
         AppModule,
-        new FastifyAdapter()
+        new FastifyAdapter({
+            bodyLimit: 10000000, // 10mb;
+        })
     );
 
     const configService = <ConfigService>app.get(ConfigService);
     const port = parseInt(configService.get('PORT')) ?? 4000;
-    const payloadSize = configService.get('PAYLOAD_SIZE') ?? '10mb';
-
-    app.use(bodyParser.json({ limit: payloadSize }));
-    app.use(bodyParser.urlencoded({ extended: true, limit: payloadSize }));
 
     app.setGlobalPrefix('api');
 
