@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { I18nModule } from 'nestjs-i18n';
 import { join } from 'path';
+import { AuthModule } from './auth/auth.module';
 import { SessionsModule } from './routes/sessions/sessions.module';
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { SessionsModule } from './routes/sessions/sessions.module';
                 watch: process.env.NODE_ENV !== 'production',
             },
         }),
+        AuthModule,
         SessionsModule
     ],
 })

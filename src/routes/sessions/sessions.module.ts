@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { GoogleModule } from 'src/services/google/google.module';
+import { GoogleService } from 'src/services/google.service';
 import { SessionsController } from './sessions.controller';
 
 @Module({
-    imports: [GoogleModule],
     controllers: [SessionsController],
+    providers: [GoogleService]
 })
 export class SessionsModule {}

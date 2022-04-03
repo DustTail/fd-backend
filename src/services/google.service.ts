@@ -6,16 +6,15 @@ import { I18nService } from 'nestjs-i18n';
 @Injectable()
 export class GoogleService {
     private readonly client: OAuth2Client;
-    private readonly clientId: string;
 
     constructor(
         private readonly configService: ConfigService,
         private readonly i18n: I18nService
     ) {
-        this.clientId = <string>this.configService.get('GOOGLE_CLIENT_ID');
+        const clientId = <string>this.configService.get('GOOGLE_CLIENT_ID');
         const clientSecret = <string>this.configService.get('GOOGLE_CLIENT_SECRET');
 
-        this.client = new OAuth2Client(this.clientId, clientSecret);
+        this.client = new OAuth2Client(clientId, clientSecret);
     }
 
     async verifyToken(token: string): Promise<Partial<TokenPayload>> {
