@@ -18,7 +18,6 @@ export class UpdateSessionCookieInterceptor implements NestInterceptor {
             .handle()
             .pipe(
                 tap(() => {
-                    // TODO:
                     if (sessionToken && sessionId && sessionToken !== sessionId) {
                         response.setCookie('token', sessionId);
                     }
