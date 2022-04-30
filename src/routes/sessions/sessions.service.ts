@@ -2,6 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
 import { I18nService } from 'nestjs-i18n';
+import { userRoles } from 'src/resources/users';
 
 @Injectable()
 export class SessionsService {
@@ -10,16 +11,14 @@ export class SessionsService {
         private readonly i18n: I18nService,
     ) { }
 
-    async createSession(
-        user: { id: number, role: number },
-    ): Promise<any> {
+    async createSession(userId: number, role: userRoles): Promise<any> {
         const jwtKey = <string>this.configService.get('JWT_KEY');
         const jwtLifetime = <number>parseInt(this.configService.get('JWT_LIFETIME'));
         const jwtRefreshLifetime = <number>parseInt(this.configService.get('JWT_REFRESH_LIFETIME'));
 
         const tokenParams = {
-            userId: user.id,
-            role: user.role,
+            userId,
+            role,
         };
 
         const accessToken = sign({ data: tokenParams }, jwtKey, { expiresIn: jwtLifetime });

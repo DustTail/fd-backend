@@ -1,19 +1,20 @@
-import { Body, Controller, Delete, Post, Res } from '@nestjs/common';
+import { Body, Controller, Delete, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { FastifyReply } from 'fastify';
 import { Auth } from 'src/auth/guards';
 import { UserSession } from 'src/common/decorators';
 import { CreateSessionSchema } from 'src/schemas/sessions';
-import { GoogleService } from 'src/services/google.service';
+import { GoogleService } from 'src/services/google/google.service';
+import { SessionsService } from './sessions.service';
 
 @ApiTags('sessions')
 @Controller('sessions')
 export class SessionsController {
     constructor(
         private readonly googleService: GoogleService,
+        private readonly sessionsService: SessionsService,
     ) {}
 
-    @Post()
+    @Post('google')
     @ApiCreatedResponse()
     @ApiOperation({
         summary: 'Create new session',
@@ -23,12 +24,9 @@ export class SessionsController {
     })
     async createSession(
         @Body() body: CreateSessionSchema,
-        @Res({ passthrough: true }) res: FastifyReply
     ): Promise<boolean> {
         const userData = await this.googleService.verifyToken(body.token);
-
-        // TODO:
-        res.setCookie('token', 'session-token');
+        //TODO const tokens = await this.sessionsService.createSession();
 
         return true;
     }

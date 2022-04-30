@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { SessionsModule } from 'src/routes/sessions/sessions.module';
-import { CookieStrategy } from './cookie.strategy';
+import { BearerStrategy } from './bearer.strategy';
 
 @Module({
     imports: [SessionsModule],
-    providers: [CookieStrategy],
-    exports: [CookieStrategy]
+    providers: [BearerStrategy],
+    exports: [BearerStrategy]
 })
 export class AuthModule {}
