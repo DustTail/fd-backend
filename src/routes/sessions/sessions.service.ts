@@ -3,12 +3,14 @@ import { ConfigService } from '@nestjs/config';
 import { JwtPayload, sign, verify } from 'jsonwebtoken';
 import { I18nService } from 'nestjs-i18n';
 import { userRoles } from 'src/resources/users';
+import { RedisService } from 'src/services/redis/redis.service';
 
 @Injectable()
 export class SessionsService {
     constructor(
         private readonly configService: ConfigService,
         private readonly i18n: I18nService,
+        private readonly redisService: RedisService
     ) { }
 
     async createSession(userId: number, role: userRoles): Promise<any> {
@@ -24,7 +26,8 @@ export class SessionsService {
         const accessToken = sign({ data: tokenParams }, jwtKey, { expiresIn: jwtLifetime });
         const refreshToken = sign({ data: tokenParams }, jwtKey, { expiresIn: jwtRefreshLifetime });
 
-        // TODO: save tokens
+        await this.redisService.saveAccessToken(userId, jwtLifetime, accessToken);
+        await this.redisService.saveRefreshToken(userId, jwtRefreshLifetime, refreshToken);
 
         return { accessToken, refreshToken };
     }

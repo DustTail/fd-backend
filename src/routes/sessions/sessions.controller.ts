@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/auth/guards';
 import { UserSession } from 'src/common/decorators';
+import { userRoles } from 'src/resources/users';
 import { CreateSessionSchema } from 'src/schemas/sessions';
 import { GoogleService } from 'src/services/google/google.service';
 import { SessionsService } from './sessions.service';
@@ -19,14 +20,13 @@ export class SessionsController {
     @ApiOperation({
         summary: 'Create new session',
         description: `Create new session based on Google Identity Sign-In \`id_token\`.
-        More info: https://developers.google.com/identity/sign-in/web/sign-in.
-        Field \`tokenLifeTime\` exist for testing purpose only.`
+        More info: https://developers.google.com/identity/sign-in/web/sign-in.`
     })
     async createSession(
         @Body() body: CreateSessionSchema,
     ): Promise<boolean> {
         const userData = await this.googleService.verifyToken(body.token);
-        //TODO const tokens = await this.sessionsService.createSession();
+        const tokens = await this.sessionsService.createSession(1, userRoles.USER);
 
         return true;
     }
