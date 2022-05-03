@@ -4,12 +4,14 @@ import { JwtPayload } from 'jsonwebtoken';
 import { I18nService } from 'nestjs-i18n';
 import { Strategy } from 'passport-http-bearer';
 import { SessionsService } from 'src/routes/sessions/sessions.service';
+import { RedisService } from 'src/services/redis/redis.service';
 
 @Injectable()
 export class BearerStrategy extends PassportStrategy(Strategy) {
     constructor(
         private readonly i18n: I18nService,
-        private readonly sessionService: SessionsService
+        private readonly sessionService: SessionsService,
+        private readonly redisService: RedisService,
     ) {
         super();
     }
@@ -23,17 +25,17 @@ export class BearerStrategy extends PassportStrategy(Strategy) {
         try {
             session = this.sessionService.verifyToken(token);
         } catch (error) {
-            throw new UnauthorizedException(this.i18n.translate('authorization.TOKEN_INVALID'));
+            throw new UnauthorizedException(this.i18n.t('authorization.TOKEN_INVALID'));
         }
 
-        const accessToken = await this.sessionService.getSessionAccessToken(session.data.userId);
+        const accessToken = await this.redisService.getAccessToken(session.data.userId);
 
         if (!accessToken) {
-            throw new UnauthorizedException(this.i18n.translate('authorization.TOKEN_EXPIRED'));
+            throw new UnauthorizedException(this.i18n.t('authorization.TOKEN_EXPIRED'));
         }
 
         if (token !== accessToken) {
-            throw new UnauthorizedException(this.i18n.translate('authorization.TOKEN_NOT_EXIST'));
+            throw new UnauthorizedException(this.i18n.t('authorization.TOKEN_NOT_EXIST'));
         }
 
         return session.data;

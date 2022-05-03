@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, HttpCode, Post } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, HttpCode, Post, Put } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/auth/guards';
 import { UserSession } from 'src/common/decorators';
-import { UserSessionDto } from 'src/dtos';
-import { CreateSessionSchema } from 'src/schemas/sessions';
+import { SessionDto, UserSessionDto } from 'src/dtos';
+import { CreateSessionSchema, RefreshSessionSchema } from 'src/schemas/sessions';
 import { GoogleService } from 'src/services/google/google.service';
 import { SessionsService } from './sessions.service';
 
@@ -22,7 +22,7 @@ export class SessionsController {
         description: `Create new session based on Google Identity Sign-In \`id_token\`.
         More info: https://developers.google.com/identity/sign-in/web/sign-in.`
     })
-    async createSession(
+    async createGoogleSession(
         @Body() body: CreateSessionSchema,
     ): Promise<UserSessionDto> {
         const userData = await this.googleService.verifyToken(body.token);
@@ -30,6 +30,24 @@ export class SessionsController {
         const session = await this.sessionsService.createSession(user.id, user.role);
 
         return new UserSessionDto(user, session);
+    }
+
+    @Put()
+    @ApiOkResponse({ type: SessionDto })
+    @ApiOperation({
+        summary: 'Refresh session',
+        description: 'Create new session based on `refreshToken`'
+    })
+    async refreshSession(
+        @Body() body: RefreshSessionSchema
+    ): Promise<SessionDto> {
+        const oldSession = await this.sessionsService.verifyRefreshToken(body.refreshToken);
+
+        const user = await this.sessionsService.getUserById(oldSession.data.userId);
+        await this.sessionsService.destroySession(user.id);
+        const session = await this.sessionsService.createSession(user.id, user.role);
+
+        return new SessionDto(session);
     }
 
     @Delete()
