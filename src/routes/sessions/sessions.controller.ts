@@ -26,7 +26,8 @@ export class SessionsController {
         @Body() body: CreateSessionSchema,
     ): Promise<boolean> {
         const userData = await this.googleService.verifyToken(body.token);
-        const tokens = await this.sessionsService.createSession(1, userRoles.USER);
+        const user = await this.sessionsService.appendUserByGoogleId(userData);
+        const tokens = await this.sessionsService.createSession(user.id, user.role);
 
         return true;
     }

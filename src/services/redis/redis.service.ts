@@ -13,6 +13,14 @@ export class RedisService {
         await this.client.SETEX(this.getUserRefreshTokenPrefix(userId), lifeTime, token);
     }
 
+    async getAccessToken(userId: number) {
+        return this.client.GET(this.getUserAccessTokenPrefix(userId));
+    }
+
+    async getRefreshToken(userId: number) {
+        return this.client.GET(this.getUserRefreshTokenPrefix(userId));
+    }
+
     getUserRefreshTokenPrefix(userId: number): string {
         return `user[${userId}]_refresh_token`;
     }

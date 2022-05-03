@@ -17,7 +17,7 @@ export class GoogleService {
         this.client = new OAuth2Client(clientId, clientSecret);
     }
 
-    async verifyToken(token: string): Promise<Partial<TokenPayload>> {
+    async verifyToken(token: string): Promise<Partial<TokenPayload> & Record<string, unknown>> {
         let ticket: LoginTicket;
 
         try {
@@ -31,7 +31,8 @@ export class GoogleService {
         return {
             email: payload.email,
             name: payload.name,
-            picture: payload.picture
+            picture: payload.picture,
+            googleId: ticket.getUserId()
         };
     }
 }

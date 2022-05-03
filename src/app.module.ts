@@ -20,7 +20,8 @@ const sequelizeLogger = new Logger('Sequelize');
             useFactory: (config) => ({
                 ...getSequelizeConfiguration(config),
                 models,
-                logging: (message) => sequelizeLogger.log(message)
+                logging: (message) => sequelizeLogger.log(message),
+                autoLoadModels: process.env.NODE_ENV === 'development'
             }),
         }),
         RedisModule.forRootAsync({
