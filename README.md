@@ -12,6 +12,14 @@ This project was generated with [Nest](https://github.com/nestjs/nest) version 8
 
 This is my personal project for culinary service.
 
+## Technical stack
+
+| Package | Description |
+| ----------- | ----------- |
+| [Nest](https://nestjs.com/) | A progressive Node.js framework for building efficient, reliable and scalable server-side applications. |
+| [Redis](https://redis.io/) | The open source, in-memory data store used by millions of developers as a database, cache, streaming engine, and message broker. |
+| [MySQL](https://www.mysql.com/) | Open-source relational database management system. |
+
 ## Approximate Roadmap
 
 - Simple authorization via Google, Twitter, ect.
