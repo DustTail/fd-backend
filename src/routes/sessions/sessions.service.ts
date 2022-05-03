@@ -64,16 +64,8 @@ export class SessionsService {
         await this.redisService.deleteSessions(userId);
     }
 
-    async getSessionAccessToken(sessionToken: string): Promise<any> {
-        let token;
-
-        if (!token) {
-            throw new BadRequestException(
-                await this.i18n.translate('tokens.TOKEN_INVALID')
-            );
-        }
-
-        return token;
+    async getSessionAccessToken(userId: number): Promise<string> {
+        return await this.redisService.getAccessToken(userId);
     }
 
     verifyToken(token: string): JwtPayload & any {
