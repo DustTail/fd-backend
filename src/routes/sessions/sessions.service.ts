@@ -60,9 +60,12 @@ export class SessionsService {
         return session;
     }
 
+    async destroySession(userId: number) {
+        await this.redisService.deleteSessions(userId);
+    }
+
     async getSessionAccessToken(sessionToken: string): Promise<any> {
         let token;
-        // TODO: find token
 
         if (!token) {
             throw new BadRequestException(

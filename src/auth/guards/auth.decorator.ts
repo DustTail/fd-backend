@@ -9,7 +9,7 @@ export interface AuthParams {
     roles?: number[],
 }
 
-export function Auth(authParams: AuthParams) {
+export function Auth(authParams: AuthParams = {}) {
     return applyDecorators(
         SetMetadata(AUTH_KEY, authParams),
         UseGuards(AppGuard, AuthGuard),

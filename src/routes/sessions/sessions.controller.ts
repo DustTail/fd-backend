@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Post } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, Post } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/auth/guards';
 import { UserSession } from 'src/common/decorators';
-import { userRoles } from 'src/resources/users';
+import { UserSessionDto } from 'src/dtos';
 import { CreateSessionSchema } from 'src/schemas/sessions';
 import { GoogleService } from 'src/services/google/google.service';
 import { SessionsService } from './sessions.service';
@@ -16,31 +16,32 @@ export class SessionsController {
     ) {}
 
     @Post('google')
-    @ApiCreatedResponse()
+    @ApiCreatedResponse({ type: UserSessionDto })
     @ApiOperation({
-        summary: 'Create new session',
+        summary: 'Create new session (Google)',
         description: `Create new session based on Google Identity Sign-In \`id_token\`.
         More info: https://developers.google.com/identity/sign-in/web/sign-in.`
     })
     async createSession(
         @Body() body: CreateSessionSchema,
-    ): Promise<boolean> {
+    ): Promise<UserSessionDto> {
         const userData = await this.googleService.verifyToken(body.token);
         const user = await this.sessionsService.appendUserByGoogleId(userData);
-        const tokens = await this.sessionsService.createSession(user.id, user.role);
+        const session = await this.sessionsService.createSession(user.id, user.role);
 
-        return true;
+        return new UserSessionDto(user, session);
     }
 
     @Delete()
-    @Auth({})
+    @Auth()
     @ApiOperation({
         summary: 'Destroy current session'
     })
+    @HttpCode(204)
     async destroySession(
         @UserSession() session: Session
-    ): Promise<boolean> {
-        return true;
+    ): Promise<void> {
+        await this.sessionsService.destroySession(session.userId);
     }
 
 }

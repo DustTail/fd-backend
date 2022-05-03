@@ -21,6 +21,11 @@ export class RedisService {
         return this.client.GET(this.getUserRefreshTokenPrefix(userId));
     }
 
+    async deleteSessions(userId: number) {
+        await this.client.DEL(this.getUserAccessTokenPrefix(userId));
+        await this.client.DEL(this.getUserAccessTokenPrefix(userId));
+    }
+
     getUserRefreshTokenPrefix(userId: number): string {
         return `user[${userId}]_refresh_token`;
     }

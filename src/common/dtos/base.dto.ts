@@ -25,5 +25,4 @@ export class BaseDto {
         const model = baseModel instanceof Model ? baseModel.toJSON() : baseModel;
         Object.assign(this, model);
     }
-
 }
