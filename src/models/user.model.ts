@@ -3,7 +3,7 @@ import { BaseModel, commonScopes } from 'src/common/models';
 import { userRoles } from 'src/resources/users';
 
 @Scopes(() => Object.assign({
-    byGoogleId: (googleId: string) => ({ where: { googleId } })
+    byEmail: (email: string) => ({ where: { email } })
 }, commonScopes))
 @Table
 export class User extends BaseModel {
@@ -23,11 +23,6 @@ export class User extends BaseModel {
         type: DataType.STRING,
     })
         picture: string;
-
-    @Column({
-        type: DataType.STRING,
-    })
-        googleId: string;
 
     @Column({
         type: DataType.TINYINT,

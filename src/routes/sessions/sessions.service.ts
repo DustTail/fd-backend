@@ -18,9 +18,9 @@ export class SessionsService {
         private readonly userModel: typeof User,
     ) { }
 
-    async appendUserByGoogleId(userData: Record<string, unknown>): Promise<User> {
+    async appendUserByGoogle(userData: Record<string, unknown>): Promise<User> {
         const scopes: ScopeOptions[] = [
-            { method: ['byGoogleId', userData.email] }
+            { method: ['byEmail', userData.email] }
         ];
 
         let user = await this.userModel

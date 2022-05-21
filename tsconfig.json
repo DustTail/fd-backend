@@ -25,14 +25,12 @@
     "include": [
         "./src/**/*",
         "./test/*",
+        "./test/**/*",
         "./src/i18n/*.json",
         "./src/i18n/**/*.json"
     ],
     "exclude": [
         "node_modules",
-        "test",
-        "dist",
-        "**/*spec.ts",
-        "database"
+        "dist"
     ]
 }

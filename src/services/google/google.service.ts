@@ -5,7 +5,7 @@ import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class GoogleService {
-    private readonly client: OAuth2Client;
+    public readonly client: OAuth2Client;
 
     constructor(
         private readonly configService: ConfigService,
@@ -31,8 +31,7 @@ export class GoogleService {
         return {
             email: payload.email,
             name: payload.name,
-            picture: payload.picture,
-            googleId: ticket.getUserId()
+            picture: payload.picture
         };
     }
 }
