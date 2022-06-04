@@ -1,36 +1,62 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { RedisClientType } from '@node-redis/client';
-
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { RedisClientType } from 'redis';
+import { translates } from 'src/translates';
+import { RedisHelper } from 'src/utils/redis.helper';
 @Injectable()
 export class RedisService {
-    constructor(@Inject('REDIS_CLIENT') private readonly client: RedisClientType) { }
+    constructor(
+        private readonly configService: ConfigService,
+        @Inject('REDIS_CLIENT') private readonly client: RedisClientType
+    ) { }
 
-    async saveAccessToken(userId: number, lifeTime: number, token: string): Promise<void> {
-        await this.client.SETEX(this.getUserAccessTokenPrefix(userId), lifeTime, token);
+    async saveSession(userId: number, data: PermissionsData, tokens: SessionTokens): Promise<[void, void]> {
+        return Promise.all([
+            this.saveSessionToken(tokens.sessionToken, userId, data),
+            this.saveRefreshToken(tokens.refreshToken, userId, tokens.sessionToken)
+        ]);
     }
 
-    async saveRefreshToken(userId: number, lifeTime: number, token: string): Promise<void> {
-        await this.client.SETEX(this.getUserRefreshTokenPrefix(userId), lifeTime, token);
+    private async saveSessionToken(token: string, userId: number, data: Record<string, any>): Promise<void> {
+        const jwtLifetime = <number>parseInt(this.configService.get('JWT_LIFETIME'));
+        await this.client.SETEX(RedisHelper.getSessionTokenPrefix(userId, token), jwtLifetime, JSON.stringify(data));
     }
 
-    async getAccessToken(userId: number) {
-        return this.client.GET(this.getUserAccessTokenPrefix(userId));
+    private async saveRefreshToken(token: string, userId: number, sessionToken: string): Promise<void> {
+        const jwtRefreshLifetime = <number>parseInt(this.configService.get('JWT_REFRESH_LIFETIME'));
+        await this.client.SETEX(RedisHelper.getRefreshSessionTokenPrefix(token), jwtRefreshLifetime, JSON.stringify({ userId, sessionToken }));
     }
 
-    async getRefreshToken(userId: number) {
-        return this.client.GET(this.getUserRefreshTokenPrefix(userId));
+    async getUserSession(userId, accessToken: string): Promise<PermissionsData> {
+        const sessionData = await this.client.GET(RedisHelper.getSessionTokenPrefix(userId, accessToken));
+
+        if (!sessionData) {
+            throw new NotFoundException(translates.TOKEN_EXPIRED);
+        }
+
+        return JSON.parse(sessionData);
     }
 
-    async deleteSessions(userId: number) {
-        await this.client.DEL(this.getUserAccessTokenPrefix(userId));
-        await this.client.DEL(this.getUserAccessTokenPrefix(userId));
+    async getUserId(refreshToken: string): Promise<number> {
+        const sessionData = await this.client.GET(RedisHelper.getRefreshSessionTokenPrefix(refreshToken));
+
+        if (!sessionData) {
+            throw new NotFoundException(translates.TOKEN_EXPIRED);
+        }
+
+        const { userId } = JSON.parse(sessionData);
+
+        return userId;
     }
 
-    getUserRefreshTokenPrefix(userId: number): string {
-        return `user[${userId}]_refresh_token`;
-    }
+    async destroySessionToken(refreshToken: string): Promise<void> {
+        const sessionData = await this.client.GET(RedisHelper.getRefreshSessionTokenPrefix(refreshToken));
 
-    getUserAccessTokenPrefix(userId: number): string {
-        return `user[${userId}]_access_token`;
+        if (sessionData) {
+            const { sessionToken, userId } = JSON.parse(sessionData);
+            await this.client.DEL(RedisHelper.getSessionTokenPrefix(userId, sessionToken));
+        }
+
+        await this.client.DEL(RedisHelper.getRefreshSessionTokenPrefix(refreshToken));
     }
 }

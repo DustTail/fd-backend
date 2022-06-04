@@ -1,13 +1,10 @@
 import { Global, Logger, Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { RedisClientType } from '@node-redis/client';
-import { createClient } from 'redis';
+import { createClient, RedisClientType } from 'redis';
 import { RedisService } from './redis.service';
 
-export interface RedisModuleOptions {
+interface RedisModuleOptions {
     inject: any[]
-    logger?: any
-    maxRetry: number
 }
 
 @Global()
@@ -21,35 +18,21 @@ export class RedisModule {
             providers: [
                 {
                     provide: 'REDIS_CLIENT',
-                    useFactory: async (configService: ConfigService) => {
-                        let retryAttempts = 0;
+                    useFactory: async (configService: ConfigService): Promise<RedisClientType> => {
                         let client: RedisClientType;
 
                         if (configService) {
-                            client = createClient({
-                                url: configService.get('REDIS_URL'),
-                                name: configService.get('REDIS_NAME'),
-                            });
+                            client = createClient(configService.get('REDIS_URL'));
                         } else {
                             client = createClient();
                         }
 
-                        client.on('connect', () => {
-                            redisLogger.log('The client is initiating a connection to the server.'),
-                            retryAttempts = 0;
-                        });
-                        client.on('ready', () => redisLogger.log('The client successfully initiated the connection to the server.'));
-                        client.on('end', () => redisLogger.warn('The client disconnected the connection to the server.'));
-                        client.on('reconnecting', () => {
-                            retryAttempts++;
-                            redisLogger.warn(`The client is trying to reconnect to the server. Attempts: ${retryAttempts}`);
-                            if (retryAttempts >= (options.maxRetry ?? 5)) {
-                                client.quit();
-                            }
-                        });
-                        client.on('error', (error) => redisLogger.error('Error: ', error));
+                        try {
+                            await client.connect();
+                        } catch (error) {
+                            redisLogger.error(error);
+                        }
 
-                        await client.connect();
                         return client;
                     },
                     inject: options.inject ?? []

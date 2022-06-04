@@ -1,9 +1,10 @@
-import { Controller, Put } from '@nestjs/common';
-import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, Put } from '@nestjs/common';
+import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Auth } from 'src/auth/guards';
 import { UserSession } from 'src/common/decorators';
-import { UserSessionDto } from 'src/dtos';
+import { UserDto, UserSessionDto } from 'src/dtos';
 import { userRoles } from 'src/resources/users';
+import { CreateUserSchema } from 'src/schemas/users/createUser.schema';
 import { SessionsService } from '../sessions/sessions.service';
 import { UsersService } from './users.service';
 
@@ -32,6 +33,17 @@ export class UsersController {
         const newSession = await this.sessionsService.createSession(session.userId, userRoles.AUTHOR);
 
         return new UserSessionDto(user, newSession);
+    }
+
+    @Post()
+    @ApiCreatedResponse({ type: UserDto })
+    @ApiOperation({
+        summary: 'Create new account'
+    })
+    async createAccountWithEmail(
+        @Body() body: CreateUserSchema
+    ) {
+
     }
 
 }
