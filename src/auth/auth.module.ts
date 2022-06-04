@@ -1,10 +1,19 @@
 import { Module } from '@nestjs/common';
-import { SessionsModule } from 'src/routes/sessions/sessions.module';
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User } from 'src/models';
+import { GoogleService } from 'src/services/google/google.service';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
 import { BearerStrategy } from './bearer.strategy';
 
 @Module({
-    imports: [SessionsModule],
-    providers: [BearerStrategy],
+    imports: [
+        SequelizeModule.forFeature([
+            User
+        ])
+    ],
+    controllers: [AuthController],
+    providers: [AuthService, BearerStrategy, GoogleService],
     exports: [BearerStrategy]
 })
 export class AuthModule {}

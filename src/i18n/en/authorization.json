@@ -1,5 +1,6 @@
 {
     "TOKEN_EXPIRED": "Token is expired",
     "TOKEN_INVALID": "Token is invalid",
-    "TOKEN_NOT_EXIST": "Token is not exist"
+    "TOKEN_NOT_EXIST": "Token is not exist",
+    "WRONG_CREDENTIALS": "Email or password is incorrect"
 }

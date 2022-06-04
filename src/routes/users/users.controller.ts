@@ -1,11 +1,5 @@
-import { Body, Controller, Post, Put } from '@nestjs/common';
-import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { Auth } from 'src/auth/guards';
-import { UserSession } from 'src/common/decorators';
-import { UserDto, UserSessionDto } from 'src/dtos';
-import { userRoles } from 'src/resources/users';
-import { CreateUserSchema } from 'src/schemas/users/createUser.schema';
-import { SessionsService } from '../sessions/sessions.service';
+import { Controller } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
@@ -13,37 +7,5 @@ import { UsersService } from './users.service';
 export class UsersController {
     constructor(
         private readonly usersService: UsersService,
-        private readonly sessionsService: SessionsService,
     ) {}
-
-    @Put('role/author')
-    @Auth({ role: userRoles.CLIENT })
-    @ApiOkResponse({ type: UserSessionDto })
-    @ApiOperation({
-        summary: 'Change role to Author',
-        description: 'Change role to Author and receive new session'
-    })
-    async becameAnAuthor(
-        @UserSession() session: Session
-    ): Promise<UserSessionDto> {
-        const user = await this.usersService.getUserById(session.userId);
-
-        await user.update({ role: userRoles.AUTHOR });
-        await this.sessionsService.destroySession(session.userId);
-        const newSession = await this.sessionsService.createSession(session.userId, userRoles.AUTHOR);
-
-        return new UserSessionDto(user, newSession);
-    }
-
-    @Post()
-    @ApiCreatedResponse({ type: UserDto })
-    @ApiOperation({
-        summary: 'Create new account'
-    })
-    async createAccountWithEmail(
-        @Body() body: CreateUserSchema
-    ) {
-
-    }
-
 }

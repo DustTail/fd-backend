@@ -1,5 +1,5 @@
 export class RedisHelper {
-    static getSessionTokenPrefix(userId: number, token: string): string {
+    static getSessionTokenPrefix(userId: string, token: string): string {
         return `session[${userId}][${token}]`;
     }
 

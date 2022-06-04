@@ -1,21 +1,15 @@
-import {
-    Column,
-    CreatedAt,
-    DataType,
-    Model,
-    UpdatedAt
-} from 'sequelize-typescript';
+import { Column, CreatedAt, DataType, Model, UpdatedAt } from 'sequelize-typescript';
 
 export class BaseModel extends Model {
 
     @Column({
         allowNull: false,
-        autoIncrement: true,
-        unique: true,
         primaryKey: true,
-        type: DataType.INTEGER.UNSIGNED,
+        unique: true,
+        type: DataType.UUID,
+        defaultValue: DataType.UUIDV4()
     })
-        id: number;
+        id: string;
 
     @CreatedAt
         createdAt: Date;

@@ -3,7 +3,6 @@ import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
-import { UpdateSessionCookieInterceptor } from './common/interceptors';
 
 async function bootstrap() {
     const app = await NestFactory.create<NestFastifyApplication>(
@@ -17,8 +16,6 @@ async function bootstrap() {
     const port = parseInt(configService.get('PORT')) ?? 4000;
 
     app.setGlobalPrefix('api');
-
-    app.useGlobalInterceptors(new UpdateSessionCookieInterceptor());
 
     if (configService.get('NODE_ENV') !== 'production') {
         const swaggerConfig = new DocumentBuilder()

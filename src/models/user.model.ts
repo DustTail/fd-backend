@@ -21,6 +21,18 @@ export class User extends BaseModel {
 
     @Column({
         type: DataType.STRING,
+        allowNull: false
+    })
+        password: string;
+
+    @Column({
+        type: DataType.STRING,
+        allowNull: false
+    })
+        salt: string;
+
+    @Column({
+        type: DataType.STRING,
     })
         picture: string;
 

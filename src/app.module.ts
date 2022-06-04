@@ -5,7 +5,6 @@ import { I18nModule } from 'nestjs-i18n';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import models from './models';
-import { SessionsModule } from './routes/sessions/sessions.module';
 import { RedisModule } from './services/redis/redis.module';
 import { getSequelizeConfiguration } from './utils/sequelize.config';
 
@@ -25,8 +24,7 @@ const sequelizeLogger = new Logger('Sequelize');
             }),
         }),
         RedisModule.forRootAsync({
-            inject: [ConfigService],
-            maxRetry: 5
+            inject: [ConfigService]
         }),
         I18nModule.forRoot({
             fallbackLanguage: 'en',
@@ -35,8 +33,7 @@ const sequelizeLogger = new Logger('Sequelize');
                 watch: process.env.NODE_ENV !== 'production',
             },
         }),
-        AuthModule,
-        SessionsModule
+        AuthModule
     ],
 })
 export class AppModule {}

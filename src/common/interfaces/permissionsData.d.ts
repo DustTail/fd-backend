@@ -1,4 +1,4 @@
 interface PermissionsData {
-    userId: number,
-    role: string[],
+    userId: string,
+    role: number,
 }
