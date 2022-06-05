@@ -1,14 +1,12 @@
-import { Body, Controller, Delete, HttpCode, Post, Put, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, HttpCode, Post, Put } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { LoggingInterceptor } from 'src/common/interceptors';
 import { SessionDto, UserSessionDto } from 'src/dtos';
-import { CreateSessionByCredentialsSchema, ProlongSessionSchema, CreateSessionByGoogleSchema, DestroySessionSchema } from 'src/schemas/auth';
+import { CreateSessionByCredentialsSchema, CreateSessionByGoogleSchema, DestroySessionSchema, ProlongSessionSchema } from 'src/schemas/auth';
 import { GoogleService } from 'src/services/google/google.service';
 import { RedisService } from 'src/services/redis/redis.service';
 import { AuthService } from './auth.service';
 
 @ApiTags('auth')
-@UseInterceptors(LoggingInterceptor)
 @Controller('auth')
 export class AuthController {
     constructor(
@@ -34,13 +32,13 @@ export class AuthController {
     }
 
     @Post('google')
-    @ApiOperation({ summary: 'Create new session via Google' })
+    @ApiOperation({ summary: 'Create new user and session via Google' })
     @ApiCreatedResponse({ type: () => UserSessionDto })
     async createSessionWithGMail(
         @Body() body: CreateSessionByGoogleSchema
     ): Promise<UserSessionDto> {
         const userData = await this.googleService.verifyToken(body.token);
-        const user = await this.authService.findUserByEmail(userData.email);
+        const user = await this.authService.findOrCreateUser(userData);
 
         const permissionData = this.authService.collectPermissionsData(user);
         const tokens = this.authService.generateTokens(user.id);

@@ -16,6 +16,21 @@ export class AuthService {
         private readonly userModel: typeof User
     ) { }
 
+    async findOrCreateUser(userInfo: any): Promise<User> {
+        const [user] = await this.userModel.findOrCreate({
+            where: { email: userInfo.email },
+            defaults: {
+                name: userInfo.name
+            }
+        });
+
+        if (userInfo.picture) {
+            await user.update({ picture: userInfo.picture });
+        }
+
+        return user;
+    }
+
     async findUserByEmail(email: string): Promise<User> {
         const userBaseData = await this.userModel
             .scope([

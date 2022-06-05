@@ -10,10 +10,7 @@ export class TransactionInterceptor implements NestInterceptor {
         private readonly sequelizeInstance: Sequelize
     ) { }
 
-    async intercept(
-        context: ExecutionContext,
-        next: CallHandler
-    ): Promise<Observable<any>> {
+    async intercept(context: ExecutionContext, next: CallHandler): Promise<Observable<any>> {
         const httpContext = context.switchToHttp();
         const req = httpContext.getRequest();
 
