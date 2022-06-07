@@ -7,6 +7,11 @@ import { randomUUID } from 'node:crypto';
 import { User } from 'src/models';
 import { PasswordHelper } from 'src/utils/password.helper';
 
+type UserInfo = {
+    email: string
+    name: string
+    picture: string
+}
 @Injectable()
 export class AuthService {
     constructor(
@@ -16,11 +21,12 @@ export class AuthService {
         private readonly userModel: typeof User
     ) { }
 
-    async findOrCreateUser(userInfo: any): Promise<User> {
+    async findOrCreateUser(userInfo: UserInfo): Promise<User> {
         const [user] = await this.userModel.findOrCreate({
             where: { email: userInfo.email },
             defaults: {
-                name: userInfo.name
+                name: userInfo.name,
+                isVerified: true,
             }
         });
 

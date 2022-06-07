@@ -1,8 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { LoginTicket, OAuth2Client, TokenPayload } from 'google-auth-library';
+import { LoginTicket, OAuth2Client } from 'google-auth-library';
 import { I18nService } from 'nestjs-i18n';
 
+type UserInfo = {
+    email: string
+    name: string
+    picture: string
+}
 @Injectable()
 export class GoogleService {
     public readonly client: OAuth2Client;
@@ -17,7 +22,7 @@ export class GoogleService {
         this.client = new OAuth2Client(clientId, clientSecret);
     }
 
-    async verifyToken(token: string): Promise<Partial<TokenPayload> & Record<string, unknown>> {
+    async verifyToken(token: string): Promise<UserInfo> {
         let ticket: LoginTicket;
 
         try {

@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
-import { validationRules } from 'src/resources/users';
+import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { passwordRegex, validationRules } from 'src/resources/users';
 
 export class CreateUserSchema {
 
@@ -20,6 +20,7 @@ export class CreateUserSchema {
     })
     @IsString()
     @IsNotEmpty()
+    @Matches(passwordRegex)
     @MinLength(validationRules.passwordMinLength)
     @MaxLength(validationRules.passwordMaxLength)
         password: string;

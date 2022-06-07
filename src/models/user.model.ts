@@ -45,6 +45,12 @@ export class User extends BaseModel {
     })
         role: number;
 
+    @Column({
+        type: DataType.BOOLEAN,
+        defaultValue: false
+    })
+        isVerified: boolean;
+
     @BeforeCreate
     static createPassword(instance: User): void {
         if (instance.password) {
