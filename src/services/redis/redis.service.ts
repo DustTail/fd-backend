@@ -28,7 +28,7 @@ export class RedisService {
         await this.client.SETEX(RedisHelper.getRefreshSessionTokenPrefix(token), jwtRefreshLifetime, JSON.stringify({ userId, sessionToken }));
     }
 
-    async getUserSession(userId, accessToken: string): Promise<PermissionsData> {
+    async getUserSession(userId: string, accessToken: string): Promise<PermissionsData> {
         const sessionData = await this.client.GET(RedisHelper.getSessionTokenPrefix(userId, accessToken));
 
         if (!sessionData) {

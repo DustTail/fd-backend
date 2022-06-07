@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from 'src/models';
 import { SesService } from 'src/services/ses/ses.service';
+import { TokensService } from '../verifications/tokens.service';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
@@ -12,6 +13,10 @@ import { UsersService } from './users.service';
         ])
     ],
     controllers: [UsersController],
-    providers: [UsersService, SesService]
+    providers: [
+        UsersService,
+        SesService,
+        TokensService
+    ]
 })
 export class UsersModule {}

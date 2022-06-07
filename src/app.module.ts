@@ -5,7 +5,7 @@ import { I18nModule } from 'nestjs-i18n';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import models from './models';
-import { HealthcheckModule } from './routes/healthcheck.ts/healthcheck.module';
+import { HealthcheckModule } from './routes/healthcheck/healthcheck.module';
 import { UsersModule } from './routes/users/users.module';
 import { RedisModule } from './services/redis/redis.module';
 import { getSequelizeConfiguration } from './utils/sequelize.config';

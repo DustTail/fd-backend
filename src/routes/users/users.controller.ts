@@ -7,6 +7,7 @@ import { TransactionInterceptor } from 'src/common/interceptors';
 import { UserDto } from 'src/dtos';
 import { CreateUserSchema } from 'src/schemas/users/createUser.schema';
 import { SesService } from 'src/services/ses/ses.service';
+import { TokensService } from '../verifications/tokens.service';
 import { UsersService } from './users.service';
 
 @ApiTags('users')
@@ -15,7 +16,8 @@ export class UsersController {
     constructor(
         private readonly i18n: I18nService,
         private readonly usersService: UsersService,
-        private readonly sesService: SesService
+        private readonly sesService: SesService,
+        private readonly tokensService: TokensService
     ) { }
 
     @Post()
@@ -31,9 +33,8 @@ export class UsersController {
         }
 
         const user = await this.usersService.createUser(body, transaction);
-
-        // TODO: add test token generation
-        // await this.sesService.sendWelcomeEmail(user.email, 'test_token');
+        const token = this.tokensService.createEmailVerificationToken(user.id);
+        // await this.sesService.sendWelcomeEmail(user.email, token);
 
         return new UserDto(user);
     }
