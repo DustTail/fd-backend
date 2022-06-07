@@ -8,8 +8,7 @@ export class BaseDto {
 
     @Expose()
     @ApiProperty()
-    @Type(()=> Number)
-        id: number;
+        id: string;
 
     @Expose()
     @ApiProperty({ type: () => Date })

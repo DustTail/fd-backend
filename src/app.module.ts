@@ -6,6 +6,7 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import models from './models';
 import { HealthcheckModule } from './routes/healthcheck.ts/healthcheck.module';
+import { UsersModule } from './routes/users/users.module';
 import { RedisModule } from './services/redis/redis.module';
 import { getSequelizeConfiguration } from './utils/sequelize.config';
 
@@ -34,8 +35,9 @@ const sequelizeLogger = new Logger('Sequelize');
                 watch: process.env.NODE_ENV !== 'production',
             },
         }),
+        HealthcheckModule,
         AuthModule,
-        HealthcheckModule
+        UsersModule,
     ],
 })
 export class AppModule {}

@@ -5,6 +5,11 @@ import { validationRules } from 'src/resources/users';
 export class CreateUserSchema {
 
     @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+        name: string;
+
+    @ApiProperty()
     @IsEmail()
     @IsNotEmpty()
         email: string;
@@ -17,6 +22,6 @@ export class CreateUserSchema {
     @IsNotEmpty()
     @MinLength(validationRules.passwordMinLength)
     @MaxLength(validationRules.passwordMaxLength)
-        passpord: string;
+        password: string;
 
 }
