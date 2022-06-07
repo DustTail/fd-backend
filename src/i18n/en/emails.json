@@ -1,0 +1,4 @@
+{
+    "WELCOME_HTML": "Welcome to service. To complete the registration, follow the link <a href={completeRegistrationLink}>{completeRegistrationLink}</a>",
+    "WELCOME_SUBJECT": "Welcome to {service}"
+}

@@ -29,6 +29,7 @@
     },
     "homepage": "https://github.com/DustTail/fd-backend#readme",
     "dependencies": {
+        "@aws-sdk/client-ses": "^3.100.0",
         "@nestjs/common": "8.4.3",
         "@nestjs/config": "2.0.0",
         "@nestjs/core": "8.4.3",

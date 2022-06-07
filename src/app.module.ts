@@ -5,6 +5,7 @@ import { I18nModule } from 'nestjs-i18n';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import models from './models';
+import { HealthcheckModule } from './routes/healthcheck.ts/healthcheck.module';
 import { RedisModule } from './services/redis/redis.module';
 import { getSequelizeConfiguration } from './utils/sequelize.config';
 
@@ -33,7 +34,8 @@ const sequelizeLogger = new Logger('Sequelize');
                 watch: process.env.NODE_ENV !== 'production',
             },
         }),
-        AuthModule
+        AuthModule,
+        HealthcheckModule
     ],
 })
 export class AppModule {}
