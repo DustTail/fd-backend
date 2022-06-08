@@ -1,5 +1,5 @@
 import { BadRequestException, Body, Controller, Post, UseInterceptors } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { I18nService } from 'nestjs-i18n';
 import { Transaction } from 'sequelize';
 import { SequelizeTransaction } from 'src/common/decorators';
@@ -21,6 +21,8 @@ export class UsersController {
     ) { }
 
     @Post()
+    @ApiOperation({ summary: 'Create new user' })
+    @ApiCreatedResponse({ type: () => UserDto })
     @UseInterceptors(TransactionInterceptor)
     async registration(
         @SequelizeTransaction() transaction: Transaction,
@@ -34,7 +36,7 @@ export class UsersController {
 
         const user = await this.usersService.createUser(body, transaction);
         const token = this.tokensService.createEmailVerificationToken(user.id);
-        // await this.sesService.sendWelcomeEmail(user.email, token);
+        await this.sesService.sendWelcomeEmail(user.email, token);
 
         return new UserDto(user);
     }

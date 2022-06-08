@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import models from './models';
 import { HealthcheckModule } from './routes/healthcheck/healthcheck.module';
 import { UsersModule } from './routes/users/users.module';
+import { VerificationsController } from './routes/verifications/verifications.controller';
+import { VerificationsModule } from './routes/verifications/verifications.module';
 import { RedisModule } from './services/redis/redis.module';
 import { getSequelizeConfiguration } from './utils/sequelize.config';
 
@@ -38,6 +40,7 @@ const sequelizeLogger = new Logger('Sequelize');
         HealthcheckModule,
         AuthModule,
         UsersModule,
+        VerificationsModule
     ],
 })
 export class AppModule {}

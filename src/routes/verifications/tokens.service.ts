@@ -20,7 +20,7 @@ export class TokensService {
         return token;
     }
 
-    getUserFromEmailVerificationToken(token: string): string {
+    getUserIdFromEmailVerificationToken(token: string): string {
         const jwtKey = this.configService.get('JWT_KEY');
         let data;
 
